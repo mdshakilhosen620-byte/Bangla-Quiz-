@@ -311,12 +311,32 @@
             justify-content: center;
             font-weight: 600;
         }
-        .question-text {
-            font-size: 1.5rem;
-            font-weight: 500;
+        
+        .question-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 2rem;
             text-align: center;
         }
+        
+        /* আইকন স্টাইল পরিবর্তন */
+        #read-aloud-btn {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin-left: 15px; /* একটু স্পেস বাড়ানো হলো */
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        #read-aloud-btn:hover {
+            transform: scale(1.1);
+        }
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 0;
+        }
+
         .options-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -460,7 +480,7 @@
                     <div class="card">
                         <h2>Make a Deposit</h2>
                         <div class="info-box">
-                           Bkash Paymen to the number below and submit the form.<br>
+                            Send money to the number below and submit the form.<br>
                             <strong>Number: <span id="deposit-number">Loading...</span></strong>
                         </div>
                         <form id="deposit-form">
@@ -550,9 +570,13 @@
                 <span id="question-counter">Question 1/10</span>
                 <div class="timer-circle" id="timer">20</div>
             </div>
-            <p class="question-text" id="question-text">What is the capital of France?</p>
+            <div class="question-area">
+                <p class="question-text" id="question-text">What is the capital of France?</p>
+                <!-- আইকন পরিবর্তন -->
+                <i class='bx bxs-volume-full' id="read-aloud-btn" title="প্রশ্নটি শুনুন"></i>
+            </div>
             <div class="options-grid" id="options-grid">
-                </div>
+            </div>
         </div>
     </div>
 
@@ -565,13 +589,13 @@
     <script>
         // --- PASTE YOUR FIREBASE CONFIGURATION HERE ---
         const firebaseConfig = {
-  apiKey: "AIzaSyDc0VE6IAgP_S7mRoLaSsbfRj-rIr9itCQ",
-  authDomain: "bangla-quiz-f63e8.firebaseapp.com",
-  projectId: "bangla-quiz-f63e8",
-  storageBucket: "bangla-quiz-f63e8.firebasestorage.app",
-  messagingSenderId: "144677049709",
-  appId: "1:144677049709:web:d2d7b8ce63e8968dbd3664"
-};
+          apiKey: "AIzaSyDc0VE6IAgP_S7mRoLaSsbfRj-rIr9itCQ",
+          authDomain: "bangla-quiz-f63e8.firebaseapp.com",
+          projectId: "bangla-quiz-f63e8",
+          storageBucket: "bangla-quiz-f63e8.firebasestorage.app",
+          messagingSenderId: "144677049709",
+          appId: "1:144677049709:web:d2d7b8ce63e8968dbd3664"
+        };
         // --- END OF FIREBASE CONFIGURATION ---
 
         // Initialize Firebase
@@ -683,6 +707,9 @@
         });
 
         document.getElementById('logout-btn').addEventListener('click', () => {
+             if ('speechSynthesis' in window) {
+                speechSynthesis.cancel(); // Stop speech on logout
+            }
             auth.signOut();
         });
 
@@ -697,7 +724,6 @@
                     appSection.classList.remove('hidden');
                     fetchAppSettings();
                     loadQuizCategories();
-                    // MODIFICATION 4: Call the new history function
                     loadUserHistory();
                 }
             }, err => {
@@ -751,7 +777,6 @@
             }
         };
         
-        // --- MODIFICATION 5: REWRITTEN HISTORY FUNCTION ---
         const loadUserHistory = async () => {
             const historyList = document.getElementById('history-list');
             if (!currentUser) return;
@@ -774,7 +799,6 @@
                     transactions.push({ ...data, type: 'withdrawal', id: doc.id });
                 });
 
-                // Sort transactions by date, newest first
                 transactions.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
 
                 if (transactions.length === 0) {
@@ -785,8 +809,8 @@
                 let html = '';
                 transactions.forEach(tx => {
                     const date = tx.timestamp.toDate().toLocaleDateString();
-                    const statusClass = `status-${tx.status}`; // e.g., status-pending
-                    const amountClass = tx.type; // deposit or withdrawal
+                    const statusClass = `status-${tx.status}`;
+                    const amountClass = tx.type;
                     const sign = tx.type === 'deposit' ? '+' : '-';
 
                     html += `
@@ -830,6 +854,9 @@
         bottomNav.addEventListener('click', (e) => {
             const navItem = e.target.closest('.nav-item');
             if (navItem) {
+                if ('speechSynthesis' in window) {
+                   speechSynthesis.cancel(); // Stop speech when navigating
+                }
                 showView(navItem.dataset.view);
             }
         });
@@ -946,6 +973,10 @@
                 endQuiz();
                 return;
             }
+            
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
 
             const question = currentQuizQuestions[currentQuestionIndex];
             document.getElementById('question-counter').textContent = `Question ${currentQuestionIndex + 1}/${currentQuizQuestions.length}`;
@@ -960,6 +991,35 @@
                 button.onclick = () => selectAnswer(button, option, question.correctAnswer);
                 optionsGrid.appendChild(button);
             });
+
+            // --- ভয়েস এবং ভাষা সেট করার জন্য নতুন কোড ---
+            document.getElementById('read-aloud-btn').onclick = () => {
+                if (!('speechSynthesis' in window)) {
+                    return showToast('Sorry, your browser does not support this feature.', 'error');
+                }
+                if (speechSynthesis.speaking) {
+                    speechSynthesis.cancel();
+                    return;
+                }
+                const textToSpeak = `${question.questionText}. অপশন গুলো হলো: ${question.options.join(', ')}.`;
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                
+                // বাংলা ভয়েস খোঁজার চেষ্টা
+                let voices = speechSynthesis.getVoices();
+                let bengaliVoice = voices.find(voice => voice.lang === 'bn-BD' || voice.lang === 'bn-IN');
+
+                if (bengaliVoice) {
+                    utterance.voice = bengaliVoice;
+                } else {
+                    // যদি বাংলা ভয়েস না পাওয়া যায়, একটি ওয়ার্নিং দেখানো যেতে পারে
+                    showToast('আপনার ডিভাইসে বাংলা ভয়েস পাওয়া যায়নি।', 'error');
+                }
+                
+                utterance.lang = 'bn-BD'; // ভাষা নির্দিষ্ট করা
+                utterance.rate = 0.9; // পড়ার গতি কমানো হলো
+                speechSynthesis.speak(utterance);
+            };
+            // --- পরিবর্তন শেষ ---
 
             startTimer();
         };
@@ -981,6 +1041,9 @@
         
         const selectAnswer = (buttonEl, selectedAnswer, correctAnswer) => {
             clearInterval(timerInterval);
+             if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
             const isCorrect = selectedAnswer === correctAnswer;
             
             document.querySelectorAll('.option-btn').forEach(btn => {
@@ -1018,6 +1081,9 @@
         };
 
         const endQuiz = () => {
+             if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
             showToast('Quiz finished!', 'success');
             document.getElementById('quiz-view').classList.add('hidden');
             loadQuizCategories();
@@ -1025,6 +1091,12 @@
 
         // Initialize on load
         showView('home-view');
+        // Load voices initially
+        if ('speechSynthesis' in window) {
+            speechSynthesis.onvoiceschanged = () => {
+                speechSynthesis.getVoices();
+            };
+        }
     </script>
 </body>
 </html>
