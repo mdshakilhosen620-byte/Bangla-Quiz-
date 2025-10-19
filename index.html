@@ -9,402 +9,86 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
-        /* --- MODIFICATION 1: LIGHT THEME COLOR PALETTE --- */
         :root {
             --primary-color: #6a11cb;
             --secondary-color: #2575fc;
-            --background-color: #f4f4f9; /* Light gray background */
-            --surface-color: #ffffff;    /* White for cards and surfaces */
-            --text-color: #333333;      /* Dark text for readability */
-            --text-muted-color: #6c757d; /* Softer gray for muted text */
+            --background-color: #f4f4f9;
+            --surface-color: #ffffff;
+            --text-color: #333333;
+            --text-muted-color: #6c757d;
             --success-color: #28a745;
             --error-color: #dc3545;
             --white-color: #ffffff;
-            --border-color: #e0e0e0;   /* Light border color */
+            --border-color: #e0e0e0;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            overscroll-behavior-y: contain;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 1rem;
-            padding-bottom: 80px; /* Space for bottom nav */
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); overscroll-behavior-y: contain; }
+        .container { max-width: 600px; margin: 0 auto; padding: 1rem; padding-bottom: 80px; }
         .hidden { display: none !important; }
-
-        /* --- Notice Bar --- */
-        .notice-bar {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            color: var(--white-color);
-            padding: 0.5rem;
-            overflow: hidden;
-            white-space: nowrap;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-        .notice-bar p {
-            display: inline-block;
-            padding-left: 100%;
-            animation: scroll-notice 20s linear infinite;
-        }
-        @keyframes scroll-notice {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* --- Auth Section --- */
-        #auth-section {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .auth-container {
-            width: 100%;
-            max-width: 380px;
-            padding: 2rem;
-            background-color: var(--surface-color);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Added shadow for depth */
-        }
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color); /* Light border */
-        }
-        .auth-tab {
-            flex: 1;
-            text-align: center;
-            padding: 0.8rem;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            font-weight: 500;
-        }
-        .auth-tab.active {
-            color: var(--secondary-color);
-            border-bottom-color: var(--secondary-color);
-        }
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            color: var(--text-muted-color);
-        }
-        .form-group input {
-            width: 100%;
-            padding: 0.8rem;
-            background-color: #fdfdff; /* Slightly off-white */
-            border: 1px solid var(--border-color); /* Light border */
-            border-radius: 8px;
-            color: var(--text-color);
-            font-size: 1rem;
-        }
-        .btn {
-            width: 100%;
-            padding: 0.9rem;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            color: var(--white-color);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
+        .notice-bar { background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: var(--white-color); padding: 0.5rem; overflow: hidden; white-space: nowrap; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; }
+        .notice-bar p { display: inline-block; padding-left: 100%; animation: scroll-notice 20s linear infinite; }
+        @keyframes scroll-notice { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        #auth-section { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; }
+        .auth-container { width: 100%; max-width: 380px; padding: 2rem; background-color: var(--surface-color); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .auth-tabs { display: flex; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); }
+        .auth-tab { flex: 1; text-align: center; padding: 0.8rem; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 500; }
+        .auth-tab.active { color: var(--secondary-color); border-bottom-color: var(--secondary-color); }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted-color); }
+        .form-group input { width: 100%; padding: 0.8rem; background-color: #fdfdff; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-color); font-size: 1rem; }
+        .btn { width: 100%; padding: 0.9rem; border: none; border-radius: 8px; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: var(--white-color); font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.3s; }
         .btn:hover { opacity: 0.9; }
-
-        /* --- App Section --- */
-        #app-section {
-            padding-top: 50px; /* Space for notice bar */
-        }
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        .app-header h1 {
-            font-size: 1.5rem;
-        }
-        .balance-chip {
-            background-color: var(--surface-color);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: 600;
-            border: 1px solid var(--border-color);
-        }
-
-        .card {
-            background-color: var(--surface-color);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05); /* Soft shadow for cards */
-        }
-        .card h2 {
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color); /* Light border */
-            padding-bottom: 0.5rem;
-        }
-
-        /* Home View */
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
-        }
-        .category-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 120px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 12px;
-            cursor: pointer;
-            text-align: center;
-            color: var(--white-color);
-            font-weight: 600;
-            transition: transform 0.2s;
-        }
-        .category-item:hover {
-            transform: translateY(-5px);
-        }
-        .category-item.played {
-            background: #aaa; /* Gray for played */
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        .category-item.played:hover {
-            transform: none;
-        }
-
-
-        /* Wallet View */
-        .wallet-tabs {
-            display: flex;
-            margin-bottom: 1rem;
-        }
-        .wallet-tab {
-            flex: 1;
-            text-align: center;
-            padding: 0.8rem;
-            background-color: #e9ecef; /* Light gray for inactive tab */
-            cursor: pointer;
-            color: var(--text-muted-color);
-        }
+        #app-section { padding-top: 50px; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .app-header h1 { font-size: 1.5rem; }
+        .balance-chip { background-color: var(--surface-color); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; border: 1px solid var(--border-color); }
+        .card { background-color: var(--surface-color); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        .card h2 { margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; }
+        .category-item { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 120px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 12px; cursor: pointer; text-align: center; color: var(--white-color); font-weight: 600; transition: transform 0.2s; }
+        .category-item:hover { transform: translateY(-5px); }
+        .category-item.played { background: #aaa; cursor: not-allowed; opacity: 0.7; }
+        .category-item.played:hover { transform: none; }
+        .wallet-tabs { display: flex; margin-bottom: 1rem; }
+        .wallet-tab { flex: 1; text-align: center; padding: 0.8rem; background-color: #e9ecef; cursor: pointer; color: var(--text-muted-color); }
         .wallet-tab:first-child { border-radius: 8px 0 0 8px; }
         .wallet-tab:last-child { border-radius: 0 8px 8px 0; }
-        .wallet-tab.active {
-             background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-             color: var(--white-color);
-        }
-        .info-box {
-            background-color: #e9ecef;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            border: 1px solid var(--border-color);
-        }
-
-        /* --- MODIFICATION 2: HISTORY VIEW STYLING --- */
-        .history-list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background-color: #f8f9fa; /* Very light background for items */
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            border: 1px solid var(--border-color);
-        }
-        .history-item-details {
-            display: flex;
-            flex-direction: column;
-        }
-        .history-item-details span {
-            font-size: 0.8rem;
-            color: var(--text-muted-color);
-        }
-        .history-item-amount {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
+        .wallet-tab.active { background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: var(--white-color); }
+        .info-box { background-color: #e9ecef; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; font-size: 0.9rem; line-height: 1.5; border: 1px solid var(--border-color); }
+        .history-list-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; margin-bottom: 0.75rem; border: 1px solid var(--border-color); }
+        .history-item-details { display: flex; flex-direction: column; }
+        .history-item-details span { font-size: 0.8rem; color: var(--text-muted-color); }
+        .history-item-amount { font-weight: 600; font-size: 1.1rem; }
         .history-item-amount.deposit { color: var(--success-color); }
         .history-item-amount.withdrawal { color: var(--error-color); }
-        .history-item-status {
-            font-size: 0.8rem;
-            font-weight: 500;
-            padding: 0.2rem 0.5rem;
-            border-radius: 10px;
-            color: var(--white-color);
-        }
-        .status-pending { background-color: #ffc107; color: #333;}
+        .history-item-status { font-size: 0.8rem; font-weight: 500; padding: 0.2rem 0.5rem; border-radius: 10px; color: var(--white-color); }
+        .status-pending { background-color: #ffc107; color: #333; }
         .status-paid, .status-approved { background-color: var(--success-color); }
         .status-rejected { background-color: var(--error-color); }
-
-
-        /* Profile View */
-        .profile-info {
-            line-height: 1.8;
-        }
-        .profile-info span {
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-        .btn-logout {
-            margin-top: 1.5rem;
-            background: var(--error-color);
-        }
-
-        /* Quiz View */
-        #quiz-view {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--background-color);
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .quiz-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            font-size: 1.2rem;
-        }
-        .timer-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 3px solid var(--secondary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-        
-        .question-area {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        
-        /* আইকন স্টাইল পরিবর্তন */
-        #read-aloud-btn {
-            font-size: 1.8rem;
-            color: var(--secondary-color);
-            margin-left: 15px; /* একটু স্পেস বাড়ানো হলো */
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        #read-aloud-btn:hover {
-            transform: scale(1.1);
-        }
-        .question-text {
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin-bottom: 0;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-        .option-btn {
-            padding: 1rem;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-color);
-            font-size: 1rem;
-            text-align: left;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
+        .profile-info { line-height: 1.8; }
+        .profile-info p { word-break: break-all; }
+        .profile-info span { font-weight: 600; color: var(--primary-color); }
+        .btn-logout { margin-top: 1.5rem; background: var(--error-color); }
+        #quiz-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--background-color); z-index: 2000; display: flex; flex-direction: column; justify-content: center; padding: 1rem; }
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; font-size: 1.2rem; }
+        .timer-circle { width: 50px; height: 50px; border-radius: 50%; border: 3px solid var(--secondary-color); display: flex; align-items: center; justify-content: center; font-weight: 600; }
+        .question-area { display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; text-align: center; }
+        #read-aloud-btn { font-size: 1.8rem; color: var(--secondary-color); margin-left: 15px; cursor: pointer; transition: transform 0.2s; }
+        #read-aloud-btn:hover { transform: scale(1.1); }
+        .question-text { font-size: 1.5rem; font-weight: 500; margin-bottom: 0; }
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .option-btn { padding: 1rem; background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-color); font-size: 1rem; text-align: left; cursor: pointer; transition: background-color 0.3s, border-color 0.3s; }
         .option-btn:hover { background-color: #f1f1f1; }
         .option-btn.correct { background-color: var(--success-color); border-color: var(--success-color); color: var(--white-color); }
         .option-btn.wrong { background-color: var(--error-color); border-color: var(--error-color); color: var(--white-color); }
-
-        /* Bottom Nav */
-        #bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 65px;
-            background-color: var(--surface-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid var(--border-color); /* Light border */
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-muted-color);
-            cursor: pointer;
-            font-size: 0.7rem;
-            transition: color 0.3s;
-        }
-        .nav-item i {
-            font-size: 1.5rem;
-            margin-bottom: 4px;
-        }
-        .nav-item.active {
-            color: var(--secondary-color);
-        }
-
-        /* Alert Toast */
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            color: var(--white-color);
-            z-index: 3000;
-            opacity: 0;
-            transition: opacity 0.5s, bottom 0.5s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
+        #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background-color: var(--surface-color); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border-color); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted-color); cursor: pointer; font-size: 0.7rem; transition: color 0.3s; }
+        .nav-item i { font-size: 1.5rem; margin-bottom: 4px; }
+        .nav-item.active { color: var(--secondary-color); }
+        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); padding: 1rem 1.5rem; border-radius: 8px; color: var(--white-color); z-index: 3000; opacity: 0; transition: opacity 0.5s, bottom 0.5s; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         .toast.show { opacity: 1; bottom: 100px; }
         .toast.success { background-color: var(--success-color); }
         .toast.error { background-color: var(--error-color); }
-
     </style>
 </head>
 <body>
@@ -448,6 +132,10 @@
                 <div class="form-group">
                     <label for="register-password">Password</label>
                     <input type="password" id="register-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-referral">Referral ID (Optional)</label>
+                    <input type="text" id="register-referral">
                 </div>
                 <button type="submit" class="btn">Register</button>
             </form>
@@ -538,6 +226,9 @@
                         <p>Name: <span id="profile-name"></span></p>
                         <p>Email: <span id="profile-email"></span></p>
                         <p>Phone: <span id="profile-phone"></span></p>
+                        <p>My Referral ID: <span id="profile-referral-id"></span></p>
+                        <p>Total Referral Bonus: ৳<span id="profile-referral-bonus">0</span></p>
+                        <p>Total Referrals: <span id="profile-referral-count">0</span></p>
                     </div>
                     <button id="logout-btn" class="btn btn-logout">Logout</button>
                 </div>
@@ -572,7 +263,6 @@
             </div>
             <div class="question-area">
                 <p class="question-text" id="question-text">What is the capital of France?</p>
-                <!-- আইকন পরিবর্তন -->
                 <i class='bx bxs-volume-full' id="read-aloud-btn" title="প্রশ্নটি শুনুন"></i>
             </div>
             <div class="options-grid" id="options-grid">
@@ -598,12 +288,10 @@
         };
         // --- END OF FIREBASE CONFIGURATION ---
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Global State
         let currentUser = null;
         let appSettings = {};
         let currentQuizQuestions = [];
@@ -611,44 +299,31 @@
         let score = 0;
         let timerInterval;
 
-        // DOM Elements
         const authSection = document.getElementById('auth-section');
         const appSection = document.getElementById('app-section');
         const mainContent = document.getElementById('main-content');
         const views = document.querySelectorAll('.view');
         const bottomNav = document.getElementById('bottom-nav');
 
-        // --- UTILITY FUNCTIONS ---
         const showToast = (message, type = 'success') => {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.className = `toast show ${type}`;
-            setTimeout(() => {
-                toast.className = 'toast';
-            }, 3000);
+            setTimeout(() => { toast.className = 'toast'; }, 3000);
         };
 
         const showView = (viewId) => {
             views.forEach(view => view.classList.add('hidden'));
             document.getElementById(viewId)?.classList.remove('hidden');
-
-            const activeNavItem = document.querySelector('.nav-item.active');
-            if (activeNavItem) activeNavItem.classList.remove('active');
+            document.querySelector('.nav-item.active')?.classList.remove('active');
             document.querySelector(`.nav-item[data-view="${viewId}"]`)?.classList.add('active');
-            
             const headerTitle = document.querySelector('#app-section h1');
             if (headerTitle) {
-                const titleMap = {
-                    'home-view': 'Dashboard',
-                    'wallet-view': 'My Wallet',
-                    'history-view': 'Transaction History',
-                    'profile-view': 'My Profile'
-                };
+                const titleMap = { 'home-view': 'Dashboard', 'wallet-view': 'My Wallet', 'history-view': 'Transaction History', 'profile-view': 'My Profile' };
                 headerTitle.textContent = titleMap[viewId] || 'Quiz App';
             }
         };
 
-        // --- AUTHENTICATION ---
         auth.onAuthStateChanged(user => {
             if (user) {
                 fetchUserData(user.uid);
@@ -675,18 +350,33 @@
             const phone = document.getElementById('register-phone').value;
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
+            const referrerId = document.getElementById('register-referral').value.trim();
             
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
-                await db.collection('users').doc(user.uid).set({
+                
+                const newReferralId = user.uid.substring(0, 6).toUpperCase();
+
+                const userData = {
                     uid: user.uid,
-                    name: name,
-                    email: email,
+                    name,
+                    email,
                     phoneNumber: phone,
                     balance: 0,
-                    playedCategories: []
-                });
+                    playedCategories: [],
+                    referralId: newReferralId,
+                    referredBy: referrerId || null, // Store referrer ID
+                    referralBonus: 0, // Old field, kept for compatibility/display
+                    totalReferralBonus: 0, // NEW FIELD: To track total bonus earned
+                    referralCount: 0, // Old field, kept for display
+                    hasDeposited: false, // NEW FIELD: To track first deposit
+                    bonusCredited: false, // NEW FIELD: To track if bonus for this user has been credited
+                };
+
+                // The logic for crediting the bonus to the referrer is now moved to the admin's 'handleDeposit' function.
+
+                await db.collection('users').doc(user.uid).set(userData);
                 showToast('Registration successful!', 'success');
             } catch (error) {
                 showToast(error.message, 'error');
@@ -697,7 +387,6 @@
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
-            
             try {
                 await auth.signInWithEmailAndPassword(email, password);
                 showToast('Login successful!', 'success');
@@ -707,19 +396,15 @@
         });
 
         document.getElementById('logout-btn').addEventListener('click', () => {
-             if ('speechSynthesis' in window) {
-                speechSynthesis.cancel(); // Stop speech on logout
-            }
+             if ('speechSynthesis' in window) { speechSynthesis.cancel(); }
             auth.signOut();
         });
 
-        // --- DATA FETCHING ---
         const fetchUserData = (uid) => {
             db.collection('users').doc(uid).onSnapshot(doc => {
                 if (doc.exists) {
                     currentUser = { uid, ...doc.data() };
                     updateUIWithUserData();
-                    
                     authSection.classList.add('hidden');
                     appSection.classList.remove('hidden');
                     fetchAppSettings();
@@ -749,20 +434,16 @@
                 const snapshot = await db.collection('questions').get();
                 const categories = new Set();
                 snapshot.forEach(doc => categories.add(doc.data().categoryId));
-                
                 grid.innerHTML = '';
                 if (categories.size === 0) {
                     grid.innerHTML = '<p>No quiz categories available right now.</p>';
                     return;
                 }
-                
                 const played = currentUser.playedCategories || [];
-
                 categories.forEach(cat => {
                     const item = document.createElement('div');
                     item.className = 'category-item';
                     item.textContent = cat;
-
                     if (played.includes(cat)) {
                         item.classList.add('played');
                         item.title = 'You have already played this quiz';
@@ -780,67 +461,44 @@
         const loadUserHistory = async () => {
             const historyList = document.getElementById('history-list');
             if (!currentUser) return;
-
             try {
                 const depositsPromise = db.collection('deposits').where('userId', '==', currentUser.uid).get();
                 const withdrawalsPromise = db.collection('withdrawals').where('userId', '==', currentUser.uid).get();
-
                 const [depositsSnapshot, withdrawalsSnapshot] = await Promise.all([depositsPromise, withdrawalsPromise]);
-                
                 let transactions = [];
-
-                depositsSnapshot.forEach(doc => {
-                    const data = doc.data();
-                    transactions.push({ ...data, type: 'deposit', id: doc.id });
-                });
-
-                withdrawalsSnapshot.forEach(doc => {
-                    const data = doc.data();
-                    transactions.push({ ...data, type: 'withdrawal', id: doc.id });
-                });
-
+                depositsSnapshot.forEach(doc => transactions.push({ ...doc.data(), type: 'deposit', id: doc.id }));
+                withdrawalsSnapshot.forEach(doc => transactions.push({ ...doc.data(), type: 'withdrawal', id: doc.id }));
                 transactions.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
-
                 if (transactions.length === 0) {
                     historyList.innerHTML = '<p>You have no transaction history yet.</p>';
                     return;
                 }
-
                 let html = '';
                 transactions.forEach(tx => {
                     const date = tx.timestamp.toDate().toLocaleDateString();
                     const statusClass = `status-${tx.status}`;
                     const amountClass = tx.type;
                     const sign = tx.type === 'deposit' ? '+' : '-';
-
-                    html += `
-                        <div class="history-list-item">
-                            <div class="history-item-details">
-                                <strong>${tx.type.charAt(0).toUpperCase() + tx.type.slice(1)} Request</strong>
-                                <span>${date}</span>
-                            </div>
-                            <div>
-                                <strong class="history-item-amount ${amountClass}">${sign}৳${tx.amount.toFixed(2)}</strong>
-                                <span class="history-item-status ${statusClass}">${tx.status}</span>
-                            </div>
-                        </div>
-                    `;
+                    html += `<div class="history-list-item"><div class="history-item-details"><strong>${tx.type.charAt(0).toUpperCase() + tx.type.slice(1)} Request</strong><span>${date}</span></div><div><strong class="history-item-amount ${amountClass}">${sign}৳${tx.amount.toFixed(2)}</strong><span class="history-item-status ${statusClass}">${tx.status}</span></div></div>`;
                 });
                 historyList.innerHTML = html;
-
             } catch (error) {
                 console.error("Error loading transaction history:", error);
                 historyList.innerHTML = '<p>Could not load history. Please try again.</p>';
             }
         };
 
-        // --- UI UPDATES ---
         const updateUIWithUserData = () => {
             if (!currentUser) return;
             document.getElementById('user-balance').textContent = currentUser.balance.toFixed(2);
             document.getElementById('profile-name').textContent = currentUser.name;
             document.getElementById('profile-email').textContent = currentUser.email;
             document.getElementById('profile-phone').textContent = currentUser.phoneNumber;
+            document.getElementById('profile-referral-id').textContent = currentUser.referralId || 'N/A';
+            // Display totalReferralBonus instead of referralBonus
+            document.getElementById('profile-referral-bonus').textContent = (currentUser.totalReferralBonus || 0).toFixed(2);
+            // referralCount is now manually calculated in admin panel, but we keep the field for simple display
+            document.getElementById('profile-referral-count').textContent = currentUser.referralCount || 0; 
         };
         
         const updateUIWithAppSettings = () => {
@@ -850,18 +508,14 @@
             document.getElementById('min-withdrawal').textContent = appSettings.minWithdrawal || 'N/A';
         };
 
-        // --- APP NAVIGATION ---
         bottomNav.addEventListener('click', (e) => {
             const navItem = e.target.closest('.nav-item');
             if (navItem) {
-                if ('speechSynthesis' in window) {
-                   speechSynthesis.cancel(); // Stop speech when navigating
-                }
+                if ('speechSynthesis' in window) { speechSynthesis.cancel(); }
                 showView(navItem.dataset.view);
             }
         });
 
-        // --- WALLET LOGIC ---
         document.querySelectorAll('.wallet-tab').forEach(tab => {
             tab.addEventListener('click', (e) => {
                 document.querySelector('.wallet-tab.active').classList.remove('active');
@@ -877,21 +531,17 @@
             const amount = parseFloat(document.getElementById('deposit-amount').value);
             const userNumber = document.getElementById('user-number').value;
             const transactionId = document.getElementById('transaction-id').value;
-            
-            if (isNaN(amount) || amount <= 0) {
-                return showToast('Please enter a valid amount.', 'error');
-            }
-
+            if (isNaN(amount) || amount <= 0) return showToast('Please enter a valid amount.', 'error');
             try {
-                await db.collection('deposits').add({
-                    userId: currentUser.uid,
-                    amount: amount,
-                    userNumber: userNumber,
-                    transactionId: transactionId,
-                    status: 'pending',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                await db.collection('deposits').add({ 
+                    userId: currentUser.uid, 
+                    amount, 
+                    userNumber, 
+                    transactionId, 
+                    status: 'pending', 
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp() 
                 });
-                showToast('Deposit request submitted!', 'success');
+                showToast('Deposit request submitted! Once approved, your referrer (if any) will receive a bonus.', 'success');
                 e.target.reset();
             } catch (error) {
                 showToast('Could not submit request. Try again.', 'error');
@@ -902,35 +552,19 @@
             e.preventDefault();
             const amount = parseFloat(document.getElementById('withdraw-amount').value);
             const userNumber = document.getElementById('withdraw-user-number').value;
-
-            if (isNaN(amount) || amount < appSettings.minWithdrawal) {
-                return showToast(`Minimum withdrawal is ৳${appSettings.minWithdrawal}.`, 'error');
-            }
-            if (amount > currentUser.balance) {
-                return showToast('Insufficient balance.', 'error');
-            }
-
+            if (isNaN(amount) || amount < appSettings.minWithdrawal) return showToast(`Minimum withdrawal is ৳${appSettings.minWithdrawal}.`, 'error');
+            if (amount > currentUser.balance) return showToast('Insufficient balance.', 'error');
             try {
                 const userRef = db.collection('users').doc(currentUser.uid);
                 await db.runTransaction(async (transaction) => {
                     const userDoc = await transaction.get(userRef);
                     if (!userDoc.exists) throw "User does not exist!";
-                    
                     const newBalance = userDoc.data().balance - amount;
                     if (newBalance < 0) throw "Insufficient balance!";
-                    
                     transaction.update(userRef, { balance: newBalance });
-
                     const withdrawalRef = db.collection('withdrawals').doc();
-                    transaction.set(withdrawalRef, {
-                        userId: currentUser.uid,
-                        amount: amount,
-                        userNumber: userNumber,
-                        status: 'pending',
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    transaction.set(withdrawalRef, { userId: currentUser.uid, amount, userNumber, status: 'pending', timestamp: firebase.firestore.FieldValue.serverTimestamp() });
                 });
-
                 showToast('Withdrawal request submitted!', 'success');
                 e.target.reset();
             } catch (error) {
@@ -945,18 +579,21 @@
                 return;
             }
 
+            if (currentUser.balance <= 0) {
+                showToast('আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই। কুইজ খেলতে অনুগ্রহ করে ডিপোজিট করুন।', 'error');
+                return;
+            }
+
             try {
                 const snapshot = await db.collection('questions').where('categoryId', '==', category).get();
                 if (snapshot.empty) {
                     showToast('No questions available in this category.', 'error');
                     return;
                 }
-
                 const userRef = db.collection('users').doc(currentUser.uid);
-                await userRef.update({
-                    playedCategories: firebase.firestore.FieldValue.arrayUnion(category)
-                });
-                
+                // The 'playedCategories' update should be done at the end of the quiz for better user experience, 
+                // but we keep it here to match the original structure, ensuring a user can't play the same quiz twice.
+                await userRef.update({ playedCategories: firebase.firestore.FieldValue.arrayUnion(category) });
                 currentQuizQuestions = snapshot.docs.map(doc => doc.data());
                 currentQuestionIndex = 0;
                 score = 0;
@@ -973,15 +610,10 @@
                 endQuiz();
                 return;
             }
-            
-            if ('speechSynthesis' in window) {
-                speechSynthesis.cancel();
-            }
-
+            if ('speechSynthesis' in window) { speechSynthesis.cancel(); }
             const question = currentQuizQuestions[currentQuestionIndex];
             document.getElementById('question-counter').textContent = `Question ${currentQuestionIndex + 1}/${currentQuizQuestions.length}`;
             document.getElementById('question-text').textContent = question.questionText;
-            
             const optionsGrid = document.getElementById('options-grid');
             optionsGrid.innerHTML = '';
             question.options.forEach(option => {
@@ -992,34 +624,22 @@
                 optionsGrid.appendChild(button);
             });
 
-            // --- ভয়েস এবং ভাষা সেট করার জন্য নতুন কোড ---
             document.getElementById('read-aloud-btn').onclick = () => {
-                if (!('speechSynthesis' in window)) {
-                    return showToast('Sorry, your browser does not support this feature.', 'error');
-                }
-                if (speechSynthesis.speaking) {
-                    speechSynthesis.cancel();
-                    return;
-                }
+                if (!('speechSynthesis' in window)) return showToast('Sorry, your browser does not support this feature.', 'error');
+                if (speechSynthesis.speaking) { speechSynthesis.cancel(); return; }
                 const textToSpeak = `${question.questionText}. অপশন গুলো হলো: ${question.options.join(', ')}.`;
                 const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                
-                // বাংলা ভয়েস খোঁজার চেষ্টা
                 let voices = speechSynthesis.getVoices();
                 let bengaliVoice = voices.find(voice => voice.lang === 'bn-BD' || voice.lang === 'bn-IN');
-
                 if (bengaliVoice) {
                     utterance.voice = bengaliVoice;
                 } else {
-                    // যদি বাংলা ভয়েস না পাওয়া যায়, একটি ওয়ার্নিং দেখানো যেতে পারে
                     showToast('আপনার ডিভাইসে বাংলা ভয়েস পাওয়া যায়নি।', 'error');
                 }
-                
-                utterance.lang = 'bn-BD'; // ভাষা নির্দিষ্ট করা
-                utterance.rate = 0.9; // পড়ার গতি কমানো হলো
+                utterance.lang = 'bn-BD';
+                utterance.rate = 0.9;
                 speechSynthesis.speak(utterance);
             };
-            // --- পরিবর্তন শেষ ---
 
             startTimer();
         };
@@ -1041,22 +661,13 @@
         
         const selectAnswer = (buttonEl, selectedAnswer, correctAnswer) => {
             clearInterval(timerInterval);
-             if ('speechSynthesis' in window) {
-                speechSynthesis.cancel();
-            }
+            if ('speechSynthesis' in window) { speechSynthesis.cancel(); }
             const isCorrect = selectedAnswer === correctAnswer;
-            
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.disabled = true;
-                if (btn.textContent === correctAnswer) {
-                    btn.classList.add('correct');
-                }
+                if (btn.textContent === correctAnswer) btn.classList.add('correct');
             });
-
-            if (!isCorrect) {
-                buttonEl.classList.add('wrong');
-            }
-
+            if (!isCorrect) buttonEl.classList.add('wrong');
             handleAnswer(isCorrect);
         };
 
@@ -1064,38 +675,28 @@
             const winAmount = appSettings.quizWinAmount || 5;
             const losePenalty = appSettings.quizLosePenalty || 2;
             const amountChange = isCorrect ? winAmount : -losePenalty;
-            
             try {
                 const userRef = db.collection('users').doc(currentUser.uid);
-                await userRef.update({
-                    balance: firebase.firestore.FieldValue.increment(amountChange)
-                });
+                await userRef.update({ balance: firebase.firestore.FieldValue.increment(amountChange) });
                 showToast(isCorrect ? `+৳${winAmount} Correct!` : `-৳${losePenalty} Wrong!`, isCorrect ? 'success' : 'error');
             } catch (error) {
                 console.error("Error updating balance:", error);
                 showToast('Error updating balance.', 'error');
             }
-
             currentQuestionIndex++;
             setTimeout(displayQuestion, 1500);
         };
 
         const endQuiz = () => {
-             if ('speechSynthesis' in window) {
-                speechSynthesis.cancel();
-            }
+            if ('speechSynthesis' in window) { speechSynthesis.cancel(); }
             showToast('Quiz finished!', 'success');
             document.getElementById('quiz-view').classList.add('hidden');
             loadQuizCategories();
         };
 
-        // Initialize on load
         showView('home-view');
-        // Load voices initially
         if ('speechSynthesis' in window) {
-            speechSynthesis.onvoiceschanged = () => {
-                speechSynthesis.getVoices();
-            };
+            speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
         }
     </script>
 </body>
