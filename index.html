@@ -89,6 +89,79 @@
         .toast.show { opacity: 1; bottom: 100px; }
         .toast.success { background-color: var(--success-color); }
         .toast.error { background-color: var(--error-color); }
+
+        /* --- STYLES FOR FULL-SCREEN AD MODAL (UPDATED) --- */
+        #ad-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--surface-color);
+            z-index: 4000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .ad-modal-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        #close-ad-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background-color: var(--error-color);
+            color: var(--white-color);
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: opacity 0.3s, cursor 0.3s;
+            z-index: 4002;
+        }
+        #close-ad-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #6c757d;
+        }
+        .ad-container {
+            width: 100%;
+            height: 100%;
+        }
+        #ad-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        #ad-timer-display {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            z-index: 4002;
+        }
+        /* --- END OF AD MODAL STYLES --- */
     </style>
 </head>
 <body>
@@ -272,6 +345,18 @@
 
     <div id="toast" class="toast"></div>
 
+    <!-- --- AD MODAL (UPDATED with iframe) --- -->
+    <div id="ad-modal" class="hidden">
+        <div class="ad-modal-content">
+            <div id="ad-timer-display">20</div>
+            <button id="close-ad-btn">&times;</button>
+            <div class="ad-container">
+                <iframe id="ad-iframe" src="about:blank"></iframe>
+            </div>
+        </div>
+    </div>
+    <!-- --- END OF AD MODAL --- -->
+
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
@@ -288,6 +373,10 @@
         };
         // --- END OF FIREBASE CONFIGURATION ---
 
+        // --- আপনার বিজ্ঞাপনের লিংক এখানে পরিবর্তন করুন ---
+        const adUrl = "https://accountantflowerrespiration.com/j8p1gm31?key=73807e8f07abd253fec72312b196d630"; // উদাহরণ হিসেবে গুগল ব্যবহার করা হয়েছে।
+        // ---------------------------------------------
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -298,6 +387,7 @@
         let currentQuestionIndex = 0;
         let score = 0;
         let timerInterval;
+        let adTimerInterval;
 
         const authSection = document.getElementById('auth-section');
         const appSection = document.getElementById('app-section');
@@ -363,18 +453,24 @@
                     name,
                     email,
                     phoneNumber: phone,
-                    balance: 0,
+                    balance: 20, // Adding 20 Taka welcome bonus
                     playedCategories: [],
                     referralId: newReferralId,
-                    referredBy: referrerId || null, // Store referrer ID
-                    referralBonus: 0, // Old field, kept for compatibility/display
-                    totalReferralBonus: 0, // NEW FIELD: To track total bonus earned
-                    referralCount: 0, // Old field, kept for display
-                    hasDeposited: false, // NEW FIELD: To track first deposit
-                    bonusCredited: false, // NEW FIELD: To track if bonus for this user has been credited
+                    referredBy: referrerId || null,
+                    referralBonus: 0,
+                    totalReferralBonus: 0,
+                    referralCount: 0,
+                    hasDeposited: false,
+                    bonusCredited: true, // Marking welcome bonus as credited
+                    welcomeBonus: 20, // Storing the welcome bonus amount
+                    transactions: [{
+                        type: 'credit',
+                        amount: 20,
+                        description: 'Welcome Bonus',
+                        timestamp: new Date().toISOString(),
+                        status: 'completed'
+                    }]
                 };
-
-                // The logic for crediting the bonus to the referrer is now moved to the admin's 'handleDeposit' function.
 
                 await db.collection('users').doc(user.uid).set(userData);
                 showToast('Registration successful!', 'success');
@@ -495,9 +591,7 @@
             document.getElementById('profile-email').textContent = currentUser.email;
             document.getElementById('profile-phone').textContent = currentUser.phoneNumber;
             document.getElementById('profile-referral-id').textContent = currentUser.referralId || 'N/A';
-            // Display totalReferralBonus instead of referralBonus
             document.getElementById('profile-referral-bonus').textContent = (currentUser.totalReferralBonus || 0).toFixed(2);
-            // referralCount is now manually calculated in admin panel, but we keep the field for simple display
             document.getElementById('profile-referral-count').textContent = currentUser.referralCount || 0; 
         };
         
@@ -591,8 +685,6 @@
                     return;
                 }
                 const userRef = db.collection('users').doc(currentUser.uid);
-                // The 'playedCategories' update should be done at the end of the quiz for better user experience, 
-                // but we keep it here to match the original structure, ensuring a user can't play the same quiz twice.
                 await userRef.update({ playedCategories: firebase.firestore.FieldValue.arrayUnion(category) });
                 currentQuizQuestions = snapshot.docs.map(doc => doc.data());
                 currentQuestionIndex = 0;
@@ -687,17 +779,51 @@
             setTimeout(displayQuestion, 1500);
         };
 
-        const endQuiz = () => {
-            if ('speechSynthesis' in window) { speechSynthesis.cancel(); }
-            showToast('Quiz finished!', 'success');
-            document.getElementById('quiz-view').classList.add('hidden');
-            loadQuizCategories();
+        const startAdTimer = () => {
+            clearInterval(adTimerInterval);
+            const timerDisplay = document.getElementById('ad-timer-display');
+            const closeBtn = document.getElementById('close-ad-btn');
+            
+            let timeLeft = 20;
+            timerDisplay.textContent = timeLeft;
+            timerDisplay.classList.remove('hidden');
+            closeBtn.disabled = true;
+            
+            adTimerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(adTimerInterval);
+                    timerDisplay.classList.add('hidden');
+                    closeBtn.disabled = false;
+                }
+            }, 1000);
         };
+
+        const endQuiz = () => {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
+            // Load the ad URL into the iframe before showing the modal
+            document.getElementById('ad-iframe').src = adUrl;
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('ad-modal').classList.remove('hidden');
+            startAdTimer();
+        };
+
+        document.getElementById('close-ad-btn').addEventListener('click', () => {
+            document.getElementById('ad-modal').classList.add('hidden');
+            // Clear the iframe src to stop the ad page from running in the background
+            document.getElementById('ad-iframe').src = 'about:blank';
+            showToast('Quiz finished!', 'success');
+            loadQuizCategories();
+        });
 
         showView('home-view');
         if ('speechSynthesis' in window) {
             speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
         }
     </script>
+
 </body>
 </html>
